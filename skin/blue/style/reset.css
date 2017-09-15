@@ -1,0 +1,102 @@
+/*lmm �ع���ʽ   2017-06-29*/
+body{
+	 font-family: 'Microsoft Yahei', 'Arial', 'sans-serif';
+}
+p{margin:0px}
+
+/*dialog.css*/
+table.aui_border{
+	border-radius:5px;
+	background: #fff;
+}
+.aui_inner {
+    background: rgba(253, 225, 225, 0);
+}
+.aui_buttons {
+    background-color: rgba(246, 246, 246, 0);
+    border-top: solid 1px #DADEE5;
+}
+.aui_title {
+    height: 45px;
+    line-height: 45px;
+    /* font-size: 20px; */
+    padding: 0 28px 0 10px;
+    background-color: rgba(76, 157, 220, 0);
+    font-weight: normal;
+    color: #95a7ae;
+    font-family: Tahoma, Arial/9!important;
+    font-size: 17px;
+    background-color: #57acef;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+}
+.aui_state_focus .aui_title {
+    color: #ffffff;
+}
+.aui_close {
+    padding: 0;
+    top: 7px;
+    right: 10px;
+    width: 26px;
+    height: 26px;
+    line-height: 30px;
+    font-size: 32px;
+    color: #ffffff;
+    text-align: center;
+    font-family: Helvetica, STHeiti;
+    _font-family: Tahoma, '\u9ed1\u4f53', 'Book Antiqua', Palatino;
+}
+.aui_close:hover,.aui_close:focus {
+    background: rgba(232, 105, 26, 0);
+    color: #ffffff;
+    text-decoration: none;
+    outline: none;
+}
+.aui_buttons button{
+	border-radius:3px;
+	font-weight: normal;
+}
+button.aui_state_highlight:hover {
+    border-color: #2292ea;
+    background: #2292ea;
+}
+.aui_buttons {
+    text-align: right;
+}
+.aui_buttons button.btn_next, .aui_buttons button.btn_last {
+    color: #FFF;
+    border: solid 1px #4191CE;
+    background: #4C9DDC;
+    float: right;
+}
+button.bt_sub.btn_back {
+	float: right;
+}
+.btn-primary {
+    color: #fff;
+    background-color: #4c9ddc;
+    border-color: #4c9ddc;
+}
+.btn-primary:hover {
+    color: #fff;
+    background-color: #2582ca;
+    border-color: #2582ca;
+}
+.btn-primary:active {
+    color: #fff;
+    background-color: #2582ca;
+    border-color:#2582ca;
+}
+.table th {
+    background-color: #eaeaea;
+}
+.table>tbody>tr>td{white-space: nowrap;}
+.text-danger {
+    color: #e02c29;
+}
+.text-success {
+    color: #32bb32;
+}
+.text-warning {
+    color: #ff861e;
+}

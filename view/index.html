@@ -1,0 +1,1161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>G6-demo</title>
+    <script src="../js/lib/jquery.min.js" type="text/javascript"></script>
+    <!-- bootstrap-->
+    <link href="../js/lib/bootstrap-3.3.7-dist/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+    <script type="text/javascript" src="../js/lib/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+
+    <!--dialog-->
+    <script type="text/javascript" src="../js/lib/selfDialog.js"></script>
+
+    <!-- 公共样式 -->
+    <link href="../skin/blue/style/public.css" rel="stylesheet" type="text/css"/>
+    <link href="../skin/blue/style/style.css" rel="stylesheet" type="text/css"/>
+    <link href="../skin/blue/style/reset.css" rel="stylesheet" type="text/css"/>
+    <!--字体文件-->
+    <link href="../skin/blue/style/iconfont.css" rel="stylesheet" type="text/css"/>
+    <!-- 拖拽-->
+    <script src="../js/lib/g6/index.js"></script>
+    <!-- form序列化 -->
+    <script src="../js/lib/jquery.formHelp.js"></script>
+    <!-- 表单验证 -->
+    <script src="../js/node-validate.js"></script>
+    <script src="../js/lib/createView.js"></script>
+    <style>
+        html,body{height: 100%;}
+        .mm-container{
+            height: 100%;
+        }
+        .panel{
+            margin-bottom: 10px;
+        }
+        .btn-panel{
+            cursor: pointer;
+        }
+        .icon-list li{
+            display: inline-block;
+            text-align: center;
+            width: 62px;
+            padding: 0px 0px 10px;
+            cursor: pointer;
+        }
+        .icon-list li:hover{
+            background: #ececec;
+        }
+        #drag_tool .panel-body{
+            padding: 10px 10px;
+        }
+        .icon-list li span.iconfont{
+            font-size: 30px;
+        }
+        .icon-list li img{
+            padding-top: 3px;
+            width: 33px;
+            padding-bottom: 8px;
+        }
+        .icon-list li span.span-border{
+            border-radius: 4px;
+            display: inline-block;
+            border: 1px solid #909090;
+            padding: 3px 3px;
+            font-size: 12px;
+            width: 50px;
+            margin-bottom: 7px;
+            text-align: center;
+            margin-top: 12px;
+        }
+        .icon-list li p{
+            font-size: 12px;
+            line-height: 10px;
+        }
+        .drag_area{
+            position: relative;
+            height: 100%;
+        }
+        .drag_space{
+            position: absolute;
+            right: 0;
+            top:40px;
+            bottom: 0;
+            left: 240px;
+            border: 1px solid #cccccc;
+        }
+        .drag_tool{
+            float: left;
+            margin-right: 10px;
+            height: 100%;
+            overflow: auto;
+        }
+        .drag_tool .panel{
+            width: 98%;
+        }
+        /*弹层*/
+        .formDialog{
+            position: fixed;
+            background: #ffffff;
+            height: 200px;
+            bottom: -200px;
+            display: block;
+            left: 0;
+            right: 0;
+            border: 1px solid #e0dfdf;
+            box-shadow: 0 0 5px 2px #e0dfdf;
+        }
+        .close-btn i{
+            color: #db001a;
+            font-size: 30px;
+        }
+        .form-content{
+            position: relative;
+            padding: 10px;
+        }
+        .node-form .input-group{margin-left: 10px; margin-bottom: 10px;}
+        .close-btn{
+            position: absolute;
+            right: 5px;
+            top:0px;
+            cursor: pointer;
+        }
+        .form-inline .input-group {
+            display: inline-table;
+            vertical-align: middle;
+        }
+        /*滚动条*/
+        ::-webkit-scrollbar
+        {
+            width: 5px;
+            height: 5px;
+            background-color: #F5F5F5;
+        }
+
+        /*定义滚动条轨道 内阴影+圆角*/
+        ::-webkit-scrollbar-track
+        {
+            -webkit-box-shadow: inset 0 0 6px rgba(203, 203, 203, 0.3);
+            border-radius: 10px;
+            background-color: #F5F5F5;
+        }
+
+        /*定义滑块 内阴影+圆角*/
+        ::-webkit-scrollbar-thumb
+        {
+            border-radius: 10px;
+            -webkit-box-shadow: inset 0 0 6px rgba(194, 194, 194, 0.3);
+            background-color: #cdcdcd;
+        }
+        .nodeIcon{
+            border:1px #a1a1a1 solid;
+            border-radius: 4px;
+            min-width: 60px;
+            line-height: 60px;
+            height: 60px;
+            text-align: center;
+        }
+        .nodeIcon1{
+            border:1px #a1a1a1 solid;
+            border-radius: 100%;
+            width: 60px;
+            line-height: 60px;
+            height: 60px;text-align: center;
+        }
+        .nodeIcon i,.nodeIcon1 i {
+            font-size: 40px;
+        }
+        .nodeIcon img{
+            width:40px;
+            height:40px;
+            margin-top:10px;
+        }
+        #drag_tool .panel-body{
+            display:none
+        }
+
+        /*映射编辑*/
+        .mode-form-half2{
+            border-left: 1px solid #cccccc;
+            width: 50%;padding-left: 20px;height: 350px;
+        }
+        /*  .formDialog{
+             height: 400px;
+         } */
+        .formDialog .aearch_box input[type=text]{
+            height: 30px;
+            padding: 5px 10px;
+        }
+        .formDialog .btn_ty{
+            height: 30px;
+            margin-right: 5px;
+            padding: 5px 10px;
+        }
+        .aearch_box{
+            position: relative;
+        }
+        .input_file{
+            height: 30px;
+        }
+        .date_add_table td .form-control{margin-bottom:10px;float:left}
+        .btn_box {
+            display: block;
+            text-align: left;
+            margin: 0px auto 0px;
+            padding-top:77px;
+        }
+        .date_add_table,.mm-otheradd{
+            margin: 0;
+        }
+        .table-header{
+            border-bottom: 1px solid #dedede;
+            width: 96%;
+            line-height: 0;
+            margin-top: 12px;
+            margin-bottom: 5px;
+        }
+        .table-header span{
+            display: inline-block;
+            font-weight: bold;
+            line-height: 25px;
+        }
+        .dialog-form-table{
+            overflow: auto;
+            height: 258px;
+        }
+        .mode-form-half1{
+            width: 50%;
+            overflow: auto;
+            height: 350px;
+        }
+        .form-inline .input-group .input-group-addon{
+            width: 1%;
+        }
+        .node-form{
+            height: 150px;
+            overflow: auto;
+        }
+        .warnMes {
+            float: left;
+            margin-top: 7px;
+            margin-left: 5px;
+            margin-right:10px;
+        }
+        .red {
+            margin-top: 7px;
+            margin-left: 5px;
+            margin-bottom: 10px;
+            margin-right: 10px;
+            float: left;}
+        .green {
+            float: left;
+            margin-bottom: 10px;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+<div class="mm-container" style="padding: 10px">
+    <div class="drag_area" id="drag_area">
+        <div class="drag_tool w230" id="drag_tool">
+            <div class="panel panel-info" data-connect='3' data-index = '1'>
+                <div class="panel-heading">输出数据源组件 <i class="glyphicon glyphicon-menu-up pull-right btn-panel"></i></div>
+                <div class="panel-body" style="display:block">
+                    <ul class="icon-list">
+                        <li data-type="iconhtml" data-text="FTP输出" data-icon="ftp" data-mold="ftpOut" data-genre="file">
+                            <span class="iconfont icon-ftp"></span>
+                            <p>FTP输出</p>
+                        </li>
+                        <li data-type="iconhtml" data-text="SFTP输出" data-icon="sftp" data-mold="sftpOut" data-genre="file">
+                            <span class="iconfont icon-sftp"></span>
+                            <p>SFTP输出</p>
+                        </li>
+                        <li data-type="iconhtml" data-text="数据库输出" data-icon="database" data-mold="databaseOut" data-genre="db">
+                            <span class="iconfont icon-database"></span>
+                            <p>数据库输出</p>
+                        </li>
+                        <li data-type="iconhtml" data-text="hbase输出" data-icon="hbase" data-mold="hbaseOut" data-genre="db">
+                            <span class="iconfont icon-hbase"></span>
+                            <p>hbase输出</p>
+                        </li>
+                        <li data-type="iconhtml" data-text="HDFS输出" data-icon="hdfs" data-mold="hdfsOut" data-genre="file">
+                            <span class="iconfont icon-hdfs"></span>
+                            <p>HDFS输出</p>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="panel panel-info"  data-connect='5,6' data-index = '2'>
+                <div class="panel-heading">输入数据源组件<i class="glyphicon glyphicon-menu-down pull-right btn-panel"></i></div>
+                <div class="panel-body">
+                    <ul class="icon-list">
+                        <li data-type="iconhtml" data-text="FTP输入" data-icon="ftp" data-mold="ftpIn" data-genre="file">
+                            <span class="iconfont icon-ftp"></span>
+                            <p>FTP输入</p>
+                        </li>
+                        <li data-type="iconhtml" data-text="SFTP输入" data-icon="sftp" data-mold="sftpIn" data-genre="file">
+                            <span class="iconfont icon-sftp"></span>
+                            <p>SFTP输入</p>
+                        </li>
+                        <li data-type="iconhtml" data-text="数据库输入" data-icon="database" data-mold="databaseIn" data-genre="db">
+                            <span class="iconfont icon-database"></span>
+                            <p>数据库输入</p>
+                        </li>
+                        <li data-type="iconhtml" data-text="hbase输入" data-icon="hbase" data-mold="hbaseIn" data-genre="db">
+                            <span class="iconfont icon-hbase"></span>
+                            <p>hbase输入</p>
+                        </li>
+                        <li data-type="iconhtml" data-text="HDFS输入" data-icon="hdfs" data-mold="hdfsIn" data-genre="file">
+                            <span class="iconfont icon-hdfs"></span>
+                            <p>HDFS输入</p>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="panel panel-warning" data-connect='2' data-index='3'>
+                <div class="panel-heading">ETL组件<i class="glyphicon glyphicon-menu-down pull-right btn-panel"></i></div>
+                <div class="panel-body">
+                    <ul class="icon-list">
+                        <li data-type="iconhtml" data-text="文件ETL" data-icon="fileEtl"  data-mold="fileEtl" data-genre="file">
+                            <span class="iconfont icon-fileEtl"></span>
+                            <p>文件ETL</p>
+                        </li>
+                        <li data-type="iconhtml" data-text="数据库ETL" data-icon="dbEtl"  data-mold="dbEtl" data-genre="database">
+                            <span class="iconfont icon-dbEtl"></span>
+                            <p>数据库ETL</p>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="panel panel-warning" data-connect='5,6' data-index = '4'>
+                <div class="panel-heading">采集组件<i class="glyphicon glyphicon-menu-down pull-right btn-panel"></i></div>
+                <div class="panel-body">
+                    <ul class="icon-list">
+                        <li data-type="iconhtml" data-text="flume" data-icon="flume"  data-mold="flume">
+                            <span class="iconfont icon-flume"></span>
+                            <p>flume</p>
+                        </li>
+                        <li data-type="iconhtml" data-text="自定义flume" data-icon="flumeCustom" data-src="${pageContext.request.contextPath}/skin/blue/images/data-icon/flumeCustom.png"  data-mold="flumeCustom">
+                            <img src="${pageContext.request.contextPath}/skin/blue/images/data-icon/flumeCustom.png"/>
+                            <p>flume</p>
+                        </li>
+                        <li data-type="iconhtml" data-text="sqoop" data-icon="sqoop"  data-mold="sqoop">
+                            <span class="iconfont icon-sqoop"></span>
+                            <p>sqoop</p>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="panel panel-warning" data-connect='2,6' data-index = '5'>
+                <div class="panel-heading">分析组件<i class="glyphicon glyphicon-menu-down pull-right btn-panel"></i></div>
+                <div class="panel-body">
+                    <ul class="icon-list">
+                        <li data-type="iconhtml" data-text="spark" data-icon="spark"  data-mold="spark">
+                            <span class="iconfont icon-spark"></span>
+                            <p>spark</p>
+                        </li>
+                        <li data-type="iconhtml" data-text="mapreduce" data-icon="mapreduce"  data-mold="mapreduce">
+                            <span class="iconfont icon-mapreduce"></span>
+                            <p>mapreduce</p>
+                        </li>
+                        <li data-type="iconhtml" data-text="storm" data-icon="storm"  data-mold="storm">
+                            <span class="iconfont icon-storm"></span>
+                            <p>storm</p>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="panel panel-warning" data-connect='5' data-index = '6'>
+                <div class="panel-heading">缓存组件<i class="glyphicon glyphicon-menu-down pull-right btn-panel"></i></div>
+                <div class="panel-body">
+                    <ul class="icon-list">
+                        <li data-type="iconhtml" data-text="kafka" data-icon="kafka"  data-mold="kafka">
+                            <span class="iconfont icon-kafka"></span>
+                            <p>kafka</p>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="drag_handle">
+
+            <button type="button" class="btn btn-success btn-sm pull-right" id="save" style="margin-left: 5px;">提交</button>
+            <button type="button" class="btn btn-danger btn-sm pull-right" id="del">删除</button>
+            <div class="input-group w200 pull-left">
+                <div class="input-group-addon ">业务名称</div>
+                <input type="hidden" id="flowid" value=""/>
+                <input type="text" onblur="checkName('#businessName','isTaskNameExist')" class="form-control input-sm" id="businessName" placeholder="（必填）" value=""/>
+            </div>
+            <font class="red warnMes" id="businessNameMess">*</font>
+            <div class="input-group w300 pull-left">
+                <div class="input-group-addon">业务描述</div>
+                <input type="text" class="form-control input-sm" id="taskDesc"  value=""/>
+            </div>
+            <!--<input type="hidden" class="form-control input-sm" id="flow"  value="${info.flow }"/> -->
+        </div>
+        <div class="drag_space" id="drag_space"></div>
+    </div>
+    <div class="formDialog" style="bottom:0px;">
+        <div class="form-content">
+            <span class="close-btn"> <i class="iconfont icon-guanbi1"></i></span>
+            <p class="mm-bulelb">配置</p>
+            <div class="form-group form-inline">
+                <form id="form0">
+                    <div class="node-form pull-left mode-form-half1">
+                        <div class="input-group w200">
+                            <div class="input-group-addon">名称</div>
+                            <input type="" class="form-control input-sm" name="name" placeholder="（必填）"></div>
+                        <p class=""></p>
+                        <div class="input-group w200">
+                            <div class="input-group-addon">状态</div>
+                            <select name="status" class="form-control  input-sm">
+                                <option value="">请选择</option>
+                                <option value="0">启用</option>
+                                <option value="1">停用</option>
+                            </select></div>
+                        <div class="input-group w200">
+                            <div class="input-group-addon">类型</div>
+                            <select name="taskType" class="form-control  input-sm">
+                                <option value="">请选择</option>
+                                <option value="0">单次采集</option>
+                                <option value="1">周期采集</option>
+                                <option value="2">定时采集</option>
+                            </select></div>
+                        <div class="input-group w200">
+                            <div class="input-group-addon">类型</div>
+                            <select name="taskType" class="form-control  input-sm">
+                                <option value="">请选择</option>
+                                <option value="0">单次采集</option>
+                                <option value="1">周期采集</option>
+                                <option value="2">定时采集</option>
+                            </select></div>
+                        <div class="input-group w200">
+                            <div class="input-group-addon">类型</div>
+                            <select name="taskType" class="form-control  input-sm">
+                                <option value="">请选择</option>
+                                <option value="0">单次采集</option>
+                                <option value="1">周期采集</option>
+                                <option value="2">定时采集</option>
+                            </select></div>
+                        <div class="input-group w200">
+                            <div class="input-group-addon">类型</div>
+                            <select name="taskType" class="form-control  input-sm">
+                                <option value="">请选择</option>
+                                <option value="0">单次采集</option>
+                                <option value="1">周期采集</option>
+                                <option value="2">定时采集</option>
+                            </select></div>
+                        <div class="input-group w200">
+                            <div class="input-group-addon">类型</div>
+                            <select name="taskType" class="form-control  input-sm">
+                                <option value="">请选择</option>
+                                <option value="0">单次采集</option>
+                                <option value="1">周期采集</option>
+                                <option value="2">定时采集</option>
+                            </select></div>
+                        <div class="input-group">
+                            <div class="input-group-addon">参数</div>
+                            <textarea name="" class="form-control input-sm" id="" cols="54" rows="2"></textarea>
+                        </div>
+
+                    </div>
+                    <div class="pull-left mode-form-half2">
+                        <div class="aearch_box">
+                            <input name="txt2" type="text" class="form-control input_text_wid input-sm" id="txt2" />
+                            <input type="button" class="btn_ty btn c_b btn-sm"  value="选择文件" />
+                            <input type="button" id="fileMapper" class="btn_ty btn btn-primary btn-sm" value="提交匹配"/>
+                            <input type="button" id="autoMapper" class=" c_g btn_add btn btn-success btn-sm" value="自动匹配"/>
+                            <input name="upFile" class="input_file" size="30" type="file" id="upFile" onchange="txt2.value=this.value" />
+                        </div>
+                        <div class="table-header">
+                            <span style="width:40%">源字段</span>
+                            <span style="width:40%">目标字段</span>
+                            <span style="width:20%"></span>
+                        </div>
+                        <div class="dialog-form-table">
+                            <table width="100%" border="0" cellpadding="0" cellspacing="0" class="date_add_table txxy_add_table">
+                                <tbody id="ipRange">
+                                <tr id="col_100">
+                                    <td style="width:40%">
+                                        <input type="text" name="sourceFields" maxlength="500" class="form-control input-sm " onblur="nullCheck('#sourceFields100')" value="" id="sourceFields100">
+                                        <font class="red warnMes" id="sourceFields100Mess">*</font>
+                                    </td>
+                                    <td style="width:40%">
+                                        <input type="text" name="targetFields" maxlength="500" class="form-control input-sm " onblur="nullCheck('#targetFields100')" value="" id="targetFields100">
+                                        <font class="red warnMes" id="targetFields100Mess">*</font>
+                                    </td>
+                                    <td style="width:40%">
+                                        <a onclick="delIPRange(100)" title="删除" class="add_but" href="javascript:void(0)">删除</a>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                            <a href="javascript:void(0)" onclick="javascript:addIPRange()" title="添加" class="mm-otheradd add_but">添加字段</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+    <script type="text/javascript">
+        /*var data = '${info.flow}';
+        data  = data?JSON.parse(data):'';*/
+        var data = '';
+        //折叠
+        $('#drag_tool .panel-heading').click(function(){
+            if($(this).find('.glyphicon').hasClass('glyphicon-menu-down')){
+                $(this).find('.glyphicon').removeClass('glyphicon-menu-down').addClass('glyphicon-menu-up');
+            }else{
+                $(this).find('.glyphicon').removeClass('glyphicon-menu-up').addClass('glyphicon-menu-down');
+            }
+            $(this).next().slideToggle();
+        });
+
+        //禁止鼠标选中
+        var drag_area = document.getElementById('drag_tool');
+        if(document.all){
+            drag_area.onselectstart= function(){return false;}; //for ie
+        }else{
+            drag_area.onmousedown= function(){return false;};
+            drag_area.onmouseup= function(){return true;};
+        }
+        drag_area.onselectstart = new Function('event.returnValue=false;');
+
+        var canvaHeight = $("#drag_space").height();
+        // 第三步：配置画布
+        var net = new G6.Net({
+            id: 'drag_space',      // 容器ID
+            mode: 'edit',  // 编辑模式
+            height: canvaHeight   // 画布高
+        });
+        net.removeBehaviour(['wheelZoom']);
+        var shape = '';
+        var dragObj = {};
+        var seq = 0;
+        if(data){
+            var nodeslist = data.nodes;
+            var ids = nodeslist.map(function(item){ return item.id});
+            seq = Math.max.apply({},ids) + 1;
+        }
+        net.on('mouseup', function(ev){
+            if(shape!=''){
+                net.add('node', {
+                    x:ev.x,
+                    y:ev.y,
+                    label:dragObj.text,
+                    shape: dragObj.shape,
+                    connect: dragObj.connect,
+                    index: dragObj.index,
+                    src:dragObj.src,
+                    id:seq++,
+                    mold:dragObj.mold,
+                    iconname:dragObj.iconname,
+                    genre:dragObj.genre
+                });
+                shape = '';
+            }
+        });
+        //结束添加
+
+        //注册节点
+        G6.registNode('iconhtml', {
+            cssSize: 19, // 该配置项设置为 true 时，则节点不受 node size 控制
+            getHtml: function(cfg,group){
+                var origin = cfg.origin;
+                var nodeClassName = 'nodeIcon';
+                if (origin.index == 2){
+                    nodeClassName = 'nodeIcon1'
+                }
+                if( origin.iconname== 'flumeCustom'){
+                    var location = window.location.origin
+                    var dom ='<span class="'+nodeClassName+'"><img class="nodeImg" src="'+location+origin.src+'"/></span>';
+                }else{
+                    var dom ='<span class="'+nodeClassName+'"><i class="iconfont icon-'+origin.iconname+'"></i></span>';
+                }
+
+                return dom;
+            },
+            afterDraw: function(cfg, group){
+                var origin = cfg.origin;
+                if(data){
+                    group.addShape('text', {
+                        attrs: {
+                            x: cfg.x + 0,
+                            y: cfg.y + 50,
+                            textAlign: 'center',
+                            fill: '#666',
+                            text: origin.label
+                        }
+                    });
+                    /* 创建完结点  新增表单 */
+                    var id = origin.id;
+                    var form = $('#form'+id).html();
+                    var index = origin.index
+                    $('.formDialog form[id]').hide();
+                    //判断是否有表单
+                    if(form){
+                        /* $('#form'+id).show(); */
+                    }else{
+                        //新增表单
+                        addForm(origin);
+                    }
+                }else{
+                    if(!origin.color){
+                        group.addShape('text', {
+                            attrs: {
+                                x: cfg.x + 0,
+                                y: cfg.y + 50,
+                                textAlign: 'center',
+                                fill: '#666',
+                                text: origin.label
+                            }
+                        });
+                        /* 创建完结点  新增表单 */
+                        var id = origin.id;
+                        var form = $('#form'+id).html();
+                        var index = origin.index
+                        $('.formDialog form[id]').hide();
+                        //判断是否有表单
+                        if(form){
+                            /* $('#form'+id).show(); */
+                        }else{
+                            //新增表单
+                            addForm(origin);
+                        }
+                        /* if(index == 3){
+                         $('.formDialog').animate({
+                         bottom: 0,
+                         height:400
+                         },300);
+                         }else{
+                         $('.formDialog').animate({
+                         bottom: 0,
+                         height:200
+                         },300);
+                         } */
+                    }
+                }
+            }
+        }, 'html');
+
+        //删除
+        $("#del").click(function(){
+            var activeItems = net.getAllActived();
+            $.each(activeItems, function(i, n){
+                net.remove(n)
+            });
+        })
+        net.on('itemremove',function(ev){
+            var item = ev.item;
+            if(!item.destroyed){
+                var id = item.get('model').id;
+                console.log('del:'+id);
+                $('#form'+id).remove();
+                if($('.formDialog').css('height') == '400px'){
+                    $('.formDialog').animate({
+                        bottom: -400
+                    },300);
+                }else{
+                    $('.formDialog').animate({
+                        bottom: -200
+                    },300);
+                }
+            }
+        })
+
+
+        // 点击绘制按钮 获取属性
+        $('.icon-list li').on('mousedown',function(){
+            shape = $(this).data('type');
+            dragObj.text = $(this).data('text');
+            dragObj.shape = $(this).data('type')
+            dragObj.iconname = $(this).data('icon');
+            dragObj.src = $(this).data('src')?$(this).data('src'):'';
+            dragObj.connect =  $(this).parents(".panel").data('connect');
+            dragObj.index = $(this).parents(".panel").data('index');
+            dragObj.mold = $(this).data('mold');
+            dragObj.genre = $(this).data('genre');
+        });
+
+
+        // 第五️步：编辑交互变形
+        var dragging = false;
+        net.on('dragstart', function(ev){
+            dragging = true;
+            var shape = ev.shape;
+            if(shape && shape.hasClass('anchor-point')) {
+                //遍历节点
+                var nodes = net.getNodes();
+                G6.Util.each(nodes, function(node){
+                    //判断是否可以连线
+                    var nodeindex = node.get('model').index; //遍历节点时 获取可以连的节点
+                    //console.log(dragstr);
+                    var dragindex = ev.item.get('model').index; //点击的节点的index
+                    var dragbelongs = String(ev.item.get('model').connect);   //点击的节点的connect
+                    var anchorPoints = node.getAnchorPoints()   //获取节点的锚点
+
+                    if(dragindex == nodeindex){  //点击节点==遍历的节点
+                        G6.Util.each(anchorPoints, function(point, index){
+                            changePoint(node,index,false);
+                        });
+                    }else{
+                        if((dragbelongs.indexOf(nodeindex)>=0)){  //所遍历的节点 在 点击节点允许连接的节点内
+                            G6.Util.each(anchorPoints, function(point, index){
+                                changePoint(node,index,true);
+                            });
+                        }else{
+                            G6.Util.each(anchorPoints, function(point, index){
+                                changePoint(node,index,false);
+                            });
+                        }
+                    }
+
+                });
+            }
+        });
+
+        net.on('dragend', function(ev){
+            dragging = false;
+        });
+
+
+        // 拖拽边结束后重置锚点
+        net.on('dragedgeend', function(ev){
+            var shape = ev.shape;
+            var item = ev.item;
+            var edge = ev.edge;
+            // 如果没连接到锚点则删除该连接线
+            if(shape && !shape.hasClass('anchor-point')) {
+                net.remove(edge);
+            }
+            var nodes = net.getNodes();
+            G6.Util.each(nodes, function(node){
+                var anchorPoints = node.getAnchorPoints();
+                G6.Util.each(anchorPoints, function(anchorPoint, index){
+                    net.updateAnchor(node, index,{
+                        linkable: true,
+                        style: G6.Global.anchorPointStyle,
+                        hoverStyle: G6.Global.anchorPointHoverStyle
+                    });
+                });
+                net.hideAnchor(node);
+            });
+        });
+
+        // 进入锚点切换到曲线添加模式
+        net.on('mouseenter', function(ev) {
+            var shape = ev.shape;
+            if(shape && shape.hasClass('anchor-point') && !dragging) {
+                //绘制边
+                net.beginAdd('edge', {
+                    shape: 'smoothArrow'  //smoothArrow 曲线箭头 polyLineFlow直线箭头
+
+                });
+            }
+        });
+        net.on('itemclick', function(ev) {
+            var item = ev.item;
+            if(net.isNode(item)){
+                var id = item.get('model').id;
+                var form = $('#form'+id).html();
+                var index = item.get('model').index
+                $('.formDialog form[id]').hide();
+                //判断是否有表单
+                if(form){
+                    $('#form'+id).show();
+                }else{
+                    //新增表单
+                    addForm(item.get('model'));
+                }
+                if(index == 3){
+                    $('.formDialog').animate({
+                        bottom: 0,
+                        height:400
+                    },300);
+                }else{
+                    $('.formDialog').animate({
+                        bottom: 0,
+                        height:200
+                    },300);
+                }
+            }
+        });
+        /*             net.on('itemclick', function(ev) {
+         var item = ev.item;
+         if(net.isNode(item)){
+         var id = item.get('model').id;
+         var form = $('#form'+id).html();
+         var index = item.get('model').index
+         $('.formDialog form[id]').hide();
+         $('#form'+id).show();
+
+         if(index == 3){
+         $('.formDialog').animate({
+         bottom: 0,
+         height:400
+         },300);
+         }else{
+         $('.formDialog').animate({
+         bottom: 0,
+         height:200
+         },300);
+         }
+         }
+         }); */
+
+        // 离开锚点切换回编辑模式
+        net.on('mouseleave', function(ev) {
+            var shape = ev.shape;
+            if(shape && shape.hasClass('anchor-point') && !dragging) {
+                net.changeMode('edit');
+            }
+        });
+
+        net.source(data.nodes, data.edges);
+        // 第五步：渲染关系图
+        net.render();
+
+        function changePoint(node,index,flag){
+            net.updateAnchor(node, index, {
+                linkable: flag,
+                style: {
+                    fill: flag?'#14B47E':'#D0D0D0'
+                },
+                hoverStyle: {
+                    stroke: flag?'14B47E':null
+                }
+            });
+        }
+
+        function isRepeat(arr){
+            var hash = {};
+            for(var i in arr) {
+                if(hash[arr[i]])
+                    return true;
+                hash[arr[i]] = true;
+            }
+            return false;
+        }
+
+        /*form*/
+        $('.close-btn').click(function () {
+            if($('.formDialog').css('height') == '400px'){
+                $('.formDialog').animate({
+                    bottom: -400
+                },300);
+            }else{
+                $('.formDialog').animate({
+                    bottom: -200
+                },300);
+            }
+        });
+
+        //保存动作
+        $("#save").click(function (){
+
+            var saveData = net.save();
+            var edgesArr = saveData.source.edges;
+            var nodeArr = saveData.source.nodes;
+            var nodeIdArr = nodeArr.map(function (item) {
+                return item.id
+            })
+            var targetArr = edgesArr.map(function (item) {
+                return item.target
+            })
+            var sourceArr = edgesArr.map(function (item) {
+                return item.source
+            })
+            if(edgesArr.length == 0){
+                var dialog = {
+                    "isajax": 0,
+                    "autoclose":false, //可去掉,"true"
+                    "contentype":'error',// "ok", "warn",'error'
+                    "content": "流程必须完整连接！"
+                };
+                Dialog(dialog);
+            }else{
+                if((isRepeat(targetArr) || isRepeat(sourceArr))){
+                    var dialog = {
+                        "isajax": 0,
+                        "autoclose":false, //可去掉,"true"
+                        "contentype":'error',// "ok", "warn",'error'
+                        "content": "连线必须是单一节点！"
+                    };
+                    Dialog(dialog);
+                }else{
+                    if(saveData.source.edges.length == (saveData.source.nodes.length-1)){
+                        var headNode = difference(nodeIdArr,targetArr)[0];
+                        var tailNode = difference(nodeIdArr,sourceArr)[0];
+                        var headNodeIndex = net.find(headNode).get('model').index;
+                        var tailNodeIndex = net.find(tailNode).get('model').index;
+                        if(headNodeIndex == 1 || headNodeIndex == 2 || headNodeIndex == 4){
+                            if(tailNodeIndex == 2||tailNodeIndex == 5||tailNodeIndex == 6){
+                                //表单验证
+                                var isValidate = true;
+                                $(nodeArr).each(function(i,item){
+                                    var formData = $('#form'+item.id).serializeJson();
+                                    var mold = nodeArr[i].mold;
+                                    var rule = validate[mold];
+                                    //是否需要验证
+                                    if(rule){
+                                        //遍历验证规则
+                                        for(var r in rule){
+                                            if(!formData[r]){
+                                                isValidate = false;
+                                                var item = net.find(nodeArr[i].id);
+                                                net.update(item, {
+                                                    color: 'red'
+                                                });
+                                                /*  net.refresh(); */
+                                                break;
+                                            }else{
+                                                var item = net.find(nodeArr[i].id);
+                                                net.update(item, {
+                                                    color: '#00B07C'
+                                                });
+                                            }
+                                        }
+                                    }
+                                    nodeArr[i].formData = formData;
+                                });
+                                if(!isValidate){
+                                    var dialog = {
+                                        "isajax": 0,
+                                        "autoclose":false, //可去掉,"true"
+                                        "contentype":'error',// "ok", "warn",'error'
+                                        "content": "请填写必要的组件参数！"
+                                    };
+                                    Dialog(dialog);
+                                }else{
+                                    if($("#businessName").val() == ""){
+                                        var dialog = {
+                                            "isajax": 0,
+                                            "autoclose":false, //可去掉,"true"
+                                            "contentype":'error',// "ok", "warn",'error'
+                                            "content": "请填写业务流程名称！"
+                                        };
+                                        Dialog(dialog);
+                                    }else{
+                                        var data = {};
+                                        data.edges = edgesArr;
+                                        data.nodes = nodeArr;
+                                        var name = $("#businessName").val();
+                                        var taskDesc = $("#taskDesc").val();
+                                        var flowid = $("#flowid").val();
+                                        $.ajax({
+                                            type : "POST",
+                                            async : false,
+                                            dataType : "json",
+                                            url : "saveBusiness",
+                                            data : "data=" + JSON.stringify(data) + "&name=" + name + "&taskDesc=" + taskDesc + "&id="+flowid,
+                                            success : function(result) {
+                                                var dialog = {
+                                                    "isajax": 0,
+                                                    "autoclose":false, //可去掉,"true"
+                                                    "contentype":'ok',// "ok", "warn",'error'
+                                                    "content": "保存成功！",
+                                                    "destroy":function(){
+
+                                                        $(window.parent.document).find('.sel .aselec').removeClass('aselec');
+                                                        $(window.parent.document).find('.sel').removeClass('sel');
+                                                        $(window.parent.document).find('a[link="${pageContext.request.contextPath}//businessTaskScreen/toBusinessList"]').addClass('sel')
+                                                        location.href='${pageContext.request.contextPath}//businessTaskScreen/toBusinessList';
+                                                    }
+                                                };
+                                                Dialog(dialog);
+                                            },
+                                            error : function() {
+                                                var dialog = {
+                                                    "isajax": 0,
+                                                    "autoclose":false, //可去掉,"true"
+                                                    "contentype":'error',// "ok", "warn",'error'
+                                                    "content": "网络异常！"
+                                                };
+                                                Dialog(dialog);
+                                            }
+                                        });
+                                    }
+
+                                }
+                            }else{
+                                var dialog = {
+                                    "isajax": 0,
+                                    "autoclose":false, //可去掉,"true"
+                                    "contentype":'error',// "ok", "warn",'error'
+                                    "content": "流程结束必须为输入数据源组件！"
+                                };
+                                Dialog(dialog);
+                            }
+                        }else{
+                            var dialog = {
+                                "isajax": 0,
+                                "autoclose":false, //可去掉,"true"
+                                "contentype":'error',// "ok", "warn",'error'
+                                "content": "流程开始必须为数据源组件！"
+                            };
+                            Dialog(dialog);
+                        }
+
+                    }else{
+                        var dialog = {
+                            "isajax": 0,
+                            "autoclose":false, //可去掉,"true"
+                            "contentype":'error',// "ok", "warn",'error'
+                            "content": "流程必须完整连接！"
+                        };
+                        Dialog(dialog);
+                    }
+                }
+            }
+
+
+
+
+        })
+
+        /**
+         * 按节点类型添加表单
+         * @param {Object} type 节点类型
+         */
+        function addForm(model){
+            var html = '';
+            //按类型构建表单
+            if(model.index=='1'){
+                createSource(model,"ds");
+            }else if(model.index=='2'){
+                createSource(model,"wh");
+            }else if(model.index=='3'){
+                createEtl(model);
+            }else if(model.index=='4'){
+                createCollect(model);
+            }else if(model.index=='5'){
+                createAnalyze(model);
+            }else if(model.index=='6'){
+
+            }
+
+        }
+
+
+        /*映射编辑*/
+        $("#fileMapper").click(function(){
+            mapper();
+        });
+        $("#autoMapper").click(function(){
+            var ind = 500;
+            $.ajax({
+                type : "POST",
+                async : false,
+                dataType : "json",
+                url : "aotuMapper",
+                success : function(data) {
+                    $("#ipRange").empty();
+                    var columnHtml = "";
+                    for(var i=0;i<data.length;i++){
+                        columnHtml += '<tr id="col_'+ind+'">';
+                        columnHtml += '<td style="width:40%"><input type="text" name="sourceFields" maxlength="500" class="form-control input-sm " onblur="nullCheck(\'#sourceFields'+ind+'\')" value="'+data[i].sourceFields+'" id="sourceFields' + ind + '"/><font class="red warnMes" id="sourceFields'+ ind+'Mess">*</font></td>';
+                        columnHtml += '<td style="width:40%"><input type="text" name="targetFields" maxlength="500" class="form-control input-sm" onblur="nullCheck(\'#targetFields'+ind+'\')" value="'+data[i].targetFields+'" id="targetFields' + ind + '"/><font class="red warnMes" id="targetFields'+ ind+'Mess">*</font></td>';
+                        columnHtml += '<td><a onclick="delIPRange('
+                            + ind
+                            + ')" title=删除 class=add_but href="javascript:void(0)">删除</a> </td></tr>';
+                        ind++;
+                    }
+                    $("#ipRange").append(columnHtml);
+
+                },
+                error : function() {
+
+                }
+            });
+        });
+        var index = 99;
+        function addIPRange() {
+            if (!allowNew()) {
+                return;
+            }
+            var columnHtml = '<tr id="col_'+index+'">';
+            columnHtml += '<td style="width:40%"><input type="text" name="sourceFields" maxlength="500" class="form-control input-sm " onblur="nullCheck(\'#sourceFields'+index+'\')" value="" id="sourceFields' + index + '"/><font class="red warnMes" id="sourceFields'+ index+'Mess">*</font></td>';
+            columnHtml += '<td style="width:40%"><input type="text" name="targetFields" maxlength="500" class="form-control input-sm " onblur="nullCheck(\'#targetFields'+index+'\')" value="" id="targetFields' + index + '"/><font class="red warnMes" id="targetFields'+ index+'Mess">*</font></td>';
+            columnHtml += '<td><a onclick="delIPRange('
+                + index
+                + ')" title=删除 class=add_but href="javascript:void(0)">删除</a> </td></tr>';
+
+            $("#ipRange").append(columnHtml);
+
+            var txtId = "#param" + index;
+
+            $(txtId).blur(function(){
+                userCheck(txtId);
+            });
+            index++;
+        }
+        //删除IP段
+        function delIPRange(id) {
+            $("#col_" + id).remove();
+        }
+
+        //是否允许添加
+        function allowNew() {
+            var txts = $("#ipRange input[type=text]");
+            for (var i = 0; i < txts.length; i++) {
+                var data = txts[i].value;
+                if (data == "") {
+                    return nullCheck('#' + txts[i].id);
+                }
+            }
+            return true;
+        }
+
+        function mapper(){
+            var ind = 500;
+            $.ajaxFileUpload({
+                url: '${pageContext.request.contextPath}/collectionTaskScreen/fileMapper',
+                secureuri: false,
+                fileElementId: 'upFile',
+                dataType: 'json',
+                success:function (data) {
+                    $("#ipRange").empty();
+                    var columnHtml = "";
+                    for(var i=0;i<data.length;i++){
+                        var sf = data[i].sourceFields;
+                        var tgf = data[i].targetFields;
+                        if(sf.indexOf('?') == 0){
+                            sf = sf.substring(1,sf.length);
+                        }
+                        if(tgf.indexOf('?') == 0){
+                            tgf = tgf.substring(1,tgf.length);
+                        }
+                        columnHtml += '<tr id="col_'+ind+'">';
+                        columnHtml += '<td ><input type="text" name="sourceFields" maxlength="500" class="text form-control input-sm " onblur="nullCheck(\'#sourceFields'+ind+'\')" value="'+ sf +'" id="sourceFields' + ind + '"/><font class="red warnMes" id="sourceFields'+ ind+'Mess">*</font></td>';
+                        columnHtml += '<td ><input type="text" name="targetFields" maxlength="500" class="text form-control input-sm" onblur="nullCheck(\'#targetFields'+ind+'\')" value="'+ tgf +'" id="targetFields' + ind + '"/><font class="red warnMes" id="targetFields'+ ind+'Mess">*</font></td>';
+                        columnHtml += '<td><a onclick="delIPRange('
+                            + ind
+                            + ')" title=删除 class=add_but href="javascript:void(0)">删除</a> </td></tr>';
+                        ind++;
+                    }
+                    $("#ipRange").append(columnHtml);
+                    $("#txt2").val("");
+                },
+                error:function (data,status, e) {
+                    $("#txt2").val("");
+                }
+            });
+        }
+        /*映射编辑*/
+
+        /* 数组对比去重   @by lmm */
+        var NumisNaN = Number.isNaN;
+        var difference = function(arr1, arr2) {
+            return arr1.reduce(function(previous, i) {
+                var found = arr2.findIndex(function(j) {
+                    return j === i || (NumisNaN(i) && NumisNaN(j));
+                });
+                return (found < 0 && previous.push(i), previous);
+            }, []);
+        };
+    </script>
+</div>
+</body>
+</html>
